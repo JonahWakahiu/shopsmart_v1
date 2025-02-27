@@ -17,4 +17,22 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariation::class);
     }
+
+    // one to many relations with ProductImage
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
+
+    // one to many relationship with Product reviews
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    // get the default variation
+    public function defaultVariation()
+    {
+        return $this->variations()->where('default', true)->first() ?? $this->variations()->first();
+    }
 }

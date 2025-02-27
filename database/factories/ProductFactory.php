@@ -44,55 +44,48 @@ class ProductFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Product $product) {
-            $attributes = [
-                'size' => ['Small', 'Medium', 'Large', 'XL'],
-                'color' => ['Yellow', 'Blue', 'Green', 'Violet', 'Red', 'Gold'],
-            ];
-
-            $selectedAttributes = collect($attributes)->map(fn($values) => collect($values)->random(rand(1, count($values)))->all())->toArray();
-
             if ($product->type == 'variable') {
-                $product->attributes = $selectedAttributes;
-                $product->save();
 
-                // generate random variation based on selected attributes
-                $combinations = $this->randomCombinations($selectedAttributes);
+                $attributes = [
+                    'size' => ['Small', 'Medium', 'Large', 'XL'],
+                    'color' => ['Yellow', 'Blue', 'Green', 'Violet', 'Red', 'Gold'],
+                ];
+
+                // Step 2: Convert to Collection and randomly select values for each attribute
+                foreach ($attributes as $key => $values) {
+                    shuffle($values); // Shuffle the values
+                    $randomCount = rand(1, count($values)); // Pick a random count
+                    $groupedCombinations[$key] = array_slice($values, 0, $randomCount); // Take a subset
+                }
+
+                $keys = array_keys($groupedCombinations);
+                $values = array_values($groupedCombinations);
+
+                $combinations = [[]];
+                foreach ($values as $array) {
+                    $newResult = [];
+
+                    foreach ($combinations as $res) {
+                        foreach ($array as $value) {
+                            $newResult[] = array_merge($res, [$value]);
+                        }
+                    }
+                    $combinations = $newResult;
+                }
 
                 foreach ($combinations as $combination) {
+                    $attributeAssoc = array_combine($keys, $combination);
+
                     ProductVariation::factory()->create([
                         'product_id' => $product->id,
-                        'attributes' => json_encode($combination),
+                        'attributes' => $attributeAssoc,
                     ]);
                 }
+
             }
-
-            ProductImage::factory()->count(rand(4, 7))->create([
-                'product_id' => $product->id,
-            ]);
-
         });
     }
 
-    protected function randomCombinations(array $attributes)
-    {
-        $keys = array_keys($attributes);
-        $values = array_values($attributes);
 
-        $combinations = [[]];
-
-        foreach ($values as $index => $valueSet) {
-            $temp = [];
-
-            foreach ($combinations as $combination) {
-                foreach ($valueSet as $value) {
-                    $combination[$keys[$index]] = $value;
-                    $temp[] = $combination;
-                }
-            }
-            $combinations = $temp;
-        }
-
-        return collect($combinations)->random(rand(1, count($combinations)))->all();
-    }
 
 }
