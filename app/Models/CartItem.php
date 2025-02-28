@@ -27,4 +27,30 @@ class CartItem extends Model
     {
         return $this->belongsTo(ProductVariation::class);
     }
+
+    protected static function booted(): void
+    {
+        static::saving(function (CartItem $cartItem) {
+            $product = Product::find($cartItem->product_id);
+            $variation = ProductVariation::find($cartItem->variation_id);
+
+            $price = 0;
+            $subdiscount = 0;
+
+            if ($variation) {
+                $price = $variation->price;
+                $subdiscount = $variation->sale_price ? $variation->price - $variation->sale_price : 0;
+            } else {
+                $price = $product->price;
+                $subdiscount = $product->sale_price ? $product->price - $product->sale_price : 0;
+            }
+
+            $total = ($price - $subdiscount) * $cartItem->quantity;
+
+            $cartItem->price = $price;
+            $cartItem->discount = $subdiscount;
+            $cartItem->sale_price = $price - $subdiscount;
+            $cartItem->total = $total;
+        });
+    }
 }

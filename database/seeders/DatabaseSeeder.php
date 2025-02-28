@@ -16,21 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+
+
+        $this->call([
+            RolePermissionsSeeder::class,
+            UserSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
         ]);
-
-        User::factory()->count(20)->create();
-
-        $products = Product::factory()
-            ->has(ProductImage::factory()->count(rand(9, 15)), 'images')
-            ->count(50)->create();
-
-        $products->random(10)->each(function (Product $product) {
-            ProductReview::factory()->count(rand(5, 15))->create([
-                'product_id' => $product->id
-            ]);
-        });
     }
 }

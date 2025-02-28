@@ -14,8 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->string('image')->nullable();
+            $table->text('image_url')->nullable();
             $table->text('description')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamps();
         });
     }

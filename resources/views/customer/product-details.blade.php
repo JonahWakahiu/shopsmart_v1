@@ -1,4 +1,4 @@
-<x-customer-layout>
+<x-guest-layout>
     <div x-data="productDetails" class="space-y-5">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 bg-white rounded shadow-sm p-3">
             {{-- product images --}}
@@ -493,7 +493,7 @@
 
                     async addToCart() {
                         try {
-                            const response = await axios.put('{{ route('cart.update') }}', {
+                            const response = await axios.put('{{ route('customer.cart.update') }}', {
                                 product_id: this.product.id,
                                 variation_id: this.variation ? this.variation.id : null,
                                 quantity: this.quantity,
@@ -510,12 +510,13 @@
                     async changeDefaultVariation() {
                         console.log(this.variationAttributes);
                         try {
-                            const response = await axios.get('{{ route('product.variation') }}', {
-                                params: {
-                                    product_id: this.product.id,
-                                    variation_attributes: this.variationAttributes,
-                                }
-                            });
+                            const response = await axios.get(
+                                '{{ route('customer.product.variation') }}', {
+                                    params: {
+                                        product_id: this.product.id,
+                                        variation_attributes: this.variationAttributes,
+                                    }
+                                });
 
                             if (response.status === 200) {
                                 console.log(response);
@@ -555,4 +556,4 @@
             })
         </script>
     @endpush
-</x-customer-layout>
+</x-guest-layout>

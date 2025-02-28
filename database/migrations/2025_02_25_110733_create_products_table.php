@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->enum('status', ['sheduled', 'published', 'out of stock', 'inactive']);
             $table->dateTime('publish_on')->nullable();
             $table->enum('visibility', ['public', 'private'])->default('public');
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

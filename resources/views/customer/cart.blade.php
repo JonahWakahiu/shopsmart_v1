@@ -1,4 +1,4 @@
-<x-customer-layout>
+<x-guest-layout>
     <div x-data="cart">
 
         <template x-if="!items.length > 0">
@@ -191,7 +191,7 @@
 
 
                 {{-- displaying cart summary --}}
-                <div class="md:col-span-1">
+                <div class="md:col-span-1 space-y-5">
                     <div class="rounded bg-white shadow-sm">
                         <div class="px-5 py-2 font-semibold">
                             <p>Order summary</p>
@@ -262,9 +262,12 @@
                                 <p x-text="cart.total"></p>
                             </div>
 
-                            <button
-                                class="bg-indigo-500 text-white py-1.5 w-full rounded hover:bg-indigo-500/80">Proceed
-                                to Checkout</button>
+                            <form action="{{ route('customer.checkout.index') }}" method="post">
+                                @csrf
+                                <button type="submit"
+                                    class="bg-indigo-500 text-white py-1.5 w-full rounded hover:bg-indigo-500/80">Proceed
+                                    to Checkout</button>
+                            </form>
 
                             <div class="flex items-center justify-center gap-4">
                                 <span class="text-slate-500">or</span>
@@ -281,6 +284,17 @@
 
                             </div>
                         </div>
+                    </div>
+
+                    <div class="rounded bg-white shadow-sm px-5 py-3 space-y-3">
+
+                        <x-forms.input-label for="voucher" value="Do you have a voucher or gift card?" />
+                        <x-forms.text-input name="voucher" id="voucher" class="w-full" />
+
+
+                        <button class="bg-indigo-500 text-white py-1.5 w-full rounded hover:bg-indigo-500/80">Apply
+                            Code</button>
+
                     </div>
                 </div>
             </div>
@@ -326,7 +340,7 @@
 
                     async getItems() {
                         try {
-                            const response = await axios.get('{{ route('cart.items') }}');
+                            const response = await axios.get('{{ route('customer.cart.items') }}');
                             if (response.status == 200) {
                                 this.items = response.data.cart.items;
                                 this.cart = response.data.cart;
@@ -338,7 +352,7 @@
 
                     async updateItems(productId, variationId, quantity) {
                         try {
-                            const response = await axios.put('{{ route('cart.update') }}', {
+                            const response = await axios.put('{{ route('customer.cart.update') }}', {
                                 product_id: productId,
                                 variation_id: variationId ? variationId : null,
                                 quantity: quantity,
@@ -352,7 +366,8 @@
                     async clearCart() {
                         if (confirm('Are you sure?')) {
                             try {
-                                const response = await axios.delete('{{ route('cart.destroy') }}');
+                                const response = await axios.delete(
+                                    '{{ route('customer.cart.destroy') }}');
 
                                 if (response.status == 200) {
                                     this.getItems();
@@ -366,7 +381,8 @@
                     async removeItem(item) {
                         if (confirm('Are you sure?')) {
                             try {
-                                const response = await axios.delete(`{{ route('cart.destroy', ':id') }}`
+                                const response = await axios.delete(
+                                    `{{ route('customer.cart.destroy', ':id') }}`
                                     .replace(':id', item.id));
 
                                 if (response.status == 200) {
@@ -387,4 +403,4 @@
             })
         </script>
     @endpush
-</x-customer-layout>
+</x-guest-layout>

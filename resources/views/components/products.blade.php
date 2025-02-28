@@ -5,7 +5,7 @@
 
     <div class="py-6 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
         <template x-for="product in products" :key="product.id">
-            <a :href="`{{ route('listing', ':id') }}`.replace(':id', product.id)" target="_blank"
+            <a :href="`{{ route('customer.listing', ':id') }}`.replace(':id', product.id)" target="_blank"
                 class="p-2 hover:shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
                 {{-- product image --}}
                 <div class="w-full h-32 rounded-t overflow-hidden relative">
@@ -120,7 +120,7 @@
                 async getProducts() {
                     try {
                         this.loading = true;
-                        const response = await axios.get('{{ route('products.get') }}', {
+                        const response = await axios.get('{{ route('customer.products.get') }}', {
                             params: {
                                 prevNumber: this.prevNumber,
                             }
