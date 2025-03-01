@@ -4,6 +4,7 @@ use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\OrdersController;
 use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\ReviewController;
 
 Route::middleware('auth')->group(function () {
 
@@ -42,4 +43,9 @@ Route::middleware('auth')->group(function () {
             Route::get('cancel', 'cancel')->name('cancel');
         });
 
+    Route::controller(ReviewController::class)->prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('/{item}', 'create')->name('create');
+        Route::post('/{item}', 'store')->name('store');
+    });
 });

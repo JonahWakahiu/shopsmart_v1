@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_id')->unique();
             $table->decimal('subtotal', 10, 2)->nullable();
             $table->decimal('discount', 10, 2)->nullable();
             $table->decimal('delivery_charge', 10, 2)->nullable();

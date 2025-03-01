@@ -15,8 +15,10 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->integer('rating');
             $table->text('message');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->boolean('anonymous')->default(false);
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('item_id')->nullable()->constrained('order_items')->cascadeOnDelete();
             $table->timestamps();
         });
     }

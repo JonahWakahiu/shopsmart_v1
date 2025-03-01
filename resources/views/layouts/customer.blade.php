@@ -34,7 +34,10 @@
                     <span>Orders</span>
                 </a>
 
-                <a href="" class="w-full py-1.5 flex items-center gap-2 text-sm hover:text-red-500">
+                <a href="{{ route('customer.reviews.index') }}" @class([
+                    'w-full py-1.5 flex items-center gap-2 text-sm hover:text-red-500',
+                    'text-red-500' => request()->routeIs('customer.reviews.*'),
+                ])>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-chat-left-dots" viewBox="0 0 16 16">
                         <path
